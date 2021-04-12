@@ -25,13 +25,20 @@ class _GameScreenState extends State<GameScreen> {
   // pass this to child widget
   checkDeck(card) {
     print('==sS== selected: ${card.bird.slug}==');
+    print('cards to return: ${_cardsToReturn}==');
     setState(() {
       _selectedCards.add(card);
     });
   }
 
+  resetReturned() {
+    setState(() {
+      _cardsToReturn = [];
+    });
+  }
+
   addMatched() {
-    _message = '==sS== Paar gefunden: ${_selectedCards[0].bird.slug}';
+    _message = 'Paar gefunden: ${_selectedCards[0].bird.slug}';
     // add cards to matched cards
     _selectedCards.forEach((card) {
       _matchedCards.add(card);
@@ -51,7 +58,7 @@ class _GameScreenState extends State<GameScreen> {
       _selectedCards = [];
       _cardsToReturn = _tempCardsToReturn;
     });
-    print('==sS== Set State. New Task - return: ${_cardsToReturn}');
+    print('Set State. New Task - return: ${_cardsToReturn}');
   }
 
   compareCards() {
@@ -104,6 +111,7 @@ class _GameScreenState extends State<GameScreen> {
                           index: index,
                           bird: birdCards[index],
                           updateDeck: checkDeck,
+                          emptyCardsToReturn: resetReturned,
                           needsReturning: _cardsToReturn.contains(index),
                         );
                       }))),
@@ -122,7 +130,8 @@ class Tile extends StatefulWidget {
   final Bird bird;
   final updateDeck;
   final turnBack;
-  final bool needsReturning;
+  final emptyCardsToReturn;
+  bool needsReturning;
 
   // states in here, isVisible...
   Tile({
@@ -130,6 +139,7 @@ class Tile extends StatefulWidget {
     @required this.bird,
     this.needsReturning,
     this.updateDeck,
+    this.emptyCardsToReturn,
     this.turnBack,
     Key key,
   }) : super(key: key);
@@ -153,7 +163,8 @@ class _TileState extends State<Tile> {
   }
 
   void turnBack() {
-    print('Task: turning this card ${widget.bird.slug} back');
+    widget.emptyCardsToReturn();
+    widget.updateDeck(widget);
   }
 
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
@@ -162,8 +173,13 @@ class _TileState extends State<Tile> {
   Widget build(BuildContext context) {
     String activeString = _active ? 'Active' : 'Inactive';
     if (widget.needsReturning == true) {
-      print('truning this widget back now');
-      cardKey.currentState.toggleCard();
+      // delay the automatic flip back to allow user to remember
+      Future.delayed(const Duration(seconds: 2), () {
+        if (cardKey.currentState.isFront == false) {
+          cardKey.currentState.toggleCard();
+          turnBack();
+        }
+      });
     }
 
     return FlipCard(
@@ -210,7 +226,7 @@ class _TileState extends State<Tile> {
             tooltip: 'mehr Erfahren',
             onPressed: () {
               print(widget.bird);
-              // Navigator.pushNamed(context, '/detail', arguments: widget.bird);
+              Navigator.pushNamed(context, '/detail', arguments: widget.bird);
             }),
       ),
     );
