@@ -20,6 +20,7 @@ class _GameScreenState extends State<GameScreen> {
   List _selectedCards = [];
   List _matchedCards = [];
   List _cardsToReturn = []; // list of indexes
+  int _moves = 0;
   String _message = 'Finde die Vogelpaare';
 
   // pass this to child widget
@@ -27,6 +28,14 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       _selectedCards.add(card);
     });
+    increaseMoves();
+  }
+
+  increaseMoves() {
+    setState(() {
+      _moves++;
+    });
+    print(_moves);
   }
 
   resetReturned() {
@@ -83,7 +92,9 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     List birdCards = doubleUp(uniqueBirds);
-
+    if (_moves == 0) {
+      birdCards.shuffle();
+    }
     if (_selectedCards.length == 2) {
       compareCards();
     }
