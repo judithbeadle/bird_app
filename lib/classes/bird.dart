@@ -14,8 +14,7 @@ class Bird {
     @required this.slug,
     @required this.id,
     @required this.title,
-    this.sex = 'm',
-    setSex(),
+    this.sex,
   });
 
   factory Bird.fromJson(Map<String, dynamic> json) {
