@@ -9,15 +9,40 @@ class DetailScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text('${bird.title}')),
         body: Column(children: [
-          vogelHeading(),
           Expanded(
               child: Container(
                   color: Colors.white,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text('Detail'),
-                      ])))
+                  child: ListView(
+                    children: [
+                      Hero(
+                        tag: 'bird-${bird.slug}',
+                        child: Image(
+                            image: AssetImage('images/${bird.slug}-large.jpg')),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Card(
+                                child: ListTile(
+                              leading: Icon(Icons.info_outline),
+                              title: Text(bird.scientific),
+                            )),
+                            Card(
+                                child: ListTile(
+                              leading: Icon(Icons.info_outline),
+                              title: Text(bird.lebensraum),
+                            )),
+                            Card(
+                                child: ListTile(
+                              leading: Icon(Icons.info_outline),
+                              title: Text(bird.nahrung),
+                            )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )))
         ]));
   }
 }

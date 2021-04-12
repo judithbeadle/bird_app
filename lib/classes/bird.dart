@@ -4,6 +4,9 @@ class Bird {
   final String slug;
   final int id;
   final String title;
+  final String nahrung;
+  final String lebensraum;
+  final String scientific;
   String sex;
 
   void setSex(String letter) {
@@ -14,6 +17,9 @@ class Bird {
     @required this.slug,
     @required this.id,
     @required this.title,
+    this.nahrung,
+    this.lebensraum,
+    this.scientific,
     this.sex,
   });
 
@@ -22,6 +28,9 @@ class Bird {
       slug: json['slug'],
       id: json['id'],
       title: json['title']['rendered'],
+      nahrung: json['acf']['nahrung'],
+      lebensraum: json['acf']['lebensraum'],
+      scientific: json['acf']['scientific'],
     );
   }
 
